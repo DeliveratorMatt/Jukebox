@@ -3,7 +3,10 @@ const router = express.Router();
 export default router;
 
 import { getAllPlaylists, createPlaylist } from "#db/queries/tracks";
-import { getTracksByPlaylist } from "#db/queries/playlists_tracks";
+import {
+  getTracksByPlaylist,
+  createPlaylistTrack,
+} from "#db/queries/playlists_tracks";
 
 router
   .route("/")
@@ -28,7 +31,26 @@ router.route("/:id").get((req, res) => {
   res.send(req.playlist);
 });
 
-router.route("/:id/tracks").get((req, res) => {
-    const tracksByPlaylist = await (getTracksByPlaylist{ id: req.playlists_tracks.id });
+router
+  .route("/:id/tracks")
+  .get(async (req, res) => {
+    const tracksByPlaylist = await getTracksByPlaylist(playlistId);
     res.send(tracksByPlaylist);
-})
+  })
+  .post(async (req, res) => {
+    if (!req.body) return res.status(400).send("Request must have a body.");
+
+    const { playlistId, trackId } = req.body;
+    if (!trackId)
+      return res
+        .status(400)
+        .send(
+          "You must specify the ID of the track to be added to the playlist."
+        );
+
+    const playlistWithNewTrack = await createPlaylistTrack(
+      req.playlist_id,
+      req.track_id
+    );
+    res.status(201).send(playlistWithNewTrack);
+  });

@@ -15,6 +15,20 @@ export async function createTrack(name, duration_ms) {
   return track;
 }
 
+/**fetches a specific track */
+export async function getTrackById(id) {
+  const sql = `
+  SELECT *
+  FROM tracks
+  WHERE id = $1
+  `;
+
+  const {
+    rows: [track],
+  } = await db.query(sql, [id]);
+  return track;
+}
+
 /** fetches all tracks currently in the database */
 export async function getAllTracks() {
   const sql = `
