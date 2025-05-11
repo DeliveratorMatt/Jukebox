@@ -13,11 +13,3 @@ export async function createPlaylistTrack(playlist_id, track_id) {
   } = await db.query(sql, [playlist_id, track_id]);
   return playlist_track;
 }
-
-export async function getTracksByPlaylist(playlist_id) {
-  const sql = `
-  SELECT * 
-  FROM playlists_tracks
-  WHERE playlist_id = ($1)
-  `;
-}
